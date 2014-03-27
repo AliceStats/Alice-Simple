@@ -1,3 +1,25 @@
+/**
+ * @file entity_player.hpp
+ * @author Robin Dietrich <me (at) invokr (dot) org>
+ * @version 1.0
+ *
+ * @par License
+ *    Alice Replay Parser
+ *    Copyright 2014 Robin Dietrich
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 #ifndef _ALICE_ENTITY_PLAYER_HPP_
 #define _ALICE_ENTITY_PLAYER_HPP_
 
@@ -9,12 +31,14 @@
 #include <alice/entity.hpp>
 #include <alice/parser.hpp>
 
+#include "entity_hero.hpp"
+
 namespace dota {
     /** Contains entity information about a single player */
     class entity_player {
         public:
             /** Constructor, creates a new player with given arguments */
-            entity_player(parser* p, uint32_t playerId) : p(p), ePlayer(nullptr), ePlayerRessource(nullptr) {
+            entity_player(parser* p, uint32_t playerId) : p(p), ePlayer(nullptr), ePlayerRessource(nullptr), hero(nullptr) {
                 // Field id for player ressource
                 char id[5];
                 snprintf(id, 5, "%04d", playerId);
@@ -208,6 +232,20 @@ namespace dota {
             uint32_t getLevel() {
                 return ePlayerResource->prop<uint32_t>(".m_iLevel."+id);
             }
+
+            /** Returns hero this player is controlling. May return 0 if no hero has been selected yet. */
+            entity_hero* getHero() {
+                if (hero == nullptr) {
+                    uint32_t hId = ePlayer->prop<uint32_t>(".m_hAssignedHero.") & 0x7FF;
+                    entity eHero = p.getEntities()[hId]; // TODO validate hId
+
+                    if (eHero.isInitialized()) {
+                        hero = new player_hero(&eHero);
+                    }
+                }
+
+                return hero;
+            }
         private:
             /** Pointer to the parser */
             parser* p;
@@ -215,6 +253,9 @@ namespace dota {
             entity* ePlayer;
             /** Pointer to the CDOTAPlayerResource entity */
             entity* ePlayerResource;
+
+            /** Hero this player is controlling */
+            player_hero* hero;
 
             /** Appended player index (e.g. 0001) */
             std::string id;
