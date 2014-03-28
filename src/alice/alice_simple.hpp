@@ -64,6 +64,7 @@ namespace dota {
                         // CDOTAGameManagerProxy
                         // CFogController
                         // CBaseAnimating
+                        // CDOTAWearableItem
 
                     }
                 };
@@ -125,6 +126,12 @@ namespace dota {
 
                 // contains player ressources
                 handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_PlayerResource"), alice_simple, handlePlayers);
+
+                // items bough from players (base entities and specific entities with addon fields)
+                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_Item"), alice_simple, handleItemsBase);
+                for (auto &itemId : p->findEntityIdFor("CDOTA_Item_")) {
+                    handlerRegisterCallback(p->getHandler(), msgEntity, itemId, alice_simple, handleItemsAddon);
+                }
             }
 
             /** Handles the creation of the gamerules proxy object */
@@ -149,6 +156,16 @@ namespace dota {
                 }
 
                 // TODO: check gametime from handle game
+            }
+
+            /** Handle all basic items that don't have special properties */
+            void handleItemsBase(handlerCbType(msgEntity) msg) {
+                // TODO: entity_item.hpp
+            }
+
+            /** handle all special items that have additional / unique properties */
+            void handleItemsAddon(handlerCbType(msgEntity) msg) {
+                // TODO: entity_item.hpp
             }
     };
 }
