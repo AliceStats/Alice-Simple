@@ -42,7 +42,7 @@ namespace dota {
             };
 
             /** Initializes the API by loading the given replay */
-            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr) {
+            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr) {
                 // Settings object for the parser
                 settings parser_settings {
                     false, // forward_dem        -> Unessecary because any content is internal
@@ -82,6 +82,9 @@ namespace dota {
                         // Throw exception: Unkown parser type specified
                         break;
                 }
+
+                // Register to subscribe to further entities
+                handlerRegisterCallback(p->getHandler(), msgStatus, REPLAY_FLATTABLES, alice_simple, handleReady)
             }
 
             /** Releases all alocated ressources */
@@ -95,9 +98,58 @@ namespace dota {
 
             /** Prevent moving */
             alice_simple(alice_simple&&) = delete;
+
+            /** Returns number of currently active players */
+            uint32_t countPlayers() {
+                uint32_t c = 0;
+                while (players[c] != nullptr && c < 31) {
+                    ++c;
+                }
+                return c;
+            }
+
+            /** Returns pointer to specified player */
+            uint32_t getPlayer(uint32_t id) {
+                return players[id];
+            }
         private:
             /** The APIs very own parser object */
             parser* p;
+            /** Keeps track of all the players */
+            std::vector<entity_player*> players;
+
+            /** This function is called when all flattables have been parsed */
+            void handleReady(handlerCbType(msgStatus) msg) {
+                // contains basic game data
+                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTAGamerulesProxy"), alice_simple, handleGame);
+
+                // contains player ressources
+                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_PlayerResource"), alice_simple, handlePlayers);
+            }
+
+            /** Handles the creation of the gamerules proxy object */
+            void handleGame(handlerCbType(msgEntity) msg) {
+                // TODO: entity_game.hpp
+            }
+
+            /** Handles the player ressource object and creates new player entity representations */
+            void handlePlayers(handlerCbType(msgEntity) msg) {
+                char id[5];
+                entity* ePlayerRessource = msg->msg;
+
+                // check the connection state of all 32 players
+                for (int i = 0; i < 32; ++i) {
+                    snprintf(id, 5, "%04d", i);
+
+                    if (ePlayerRessource->prop<uint32_t>(std::string(".m_iConnectionState.")+id) == 1)
+                        continue;
+
+                    if (players[i] != nullptr)
+                        players[i] = new entity_player(p, i);
+                }
+
+                // TODO: check gametime from handle game
+            }
     };
 }
 
