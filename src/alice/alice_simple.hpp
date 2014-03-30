@@ -28,6 +28,7 @@
 #include <alice/config.hpp>
 #include <alice/parser.hpp>
 
+#include "entity_game.hpp"
 #include "entity_player.hpp"
 
 // Make sure we have all extra libraries available
@@ -44,7 +45,7 @@ namespace dota {
             };
 
             /** Initializes the API by loading the given replay */
-            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr), status(true) {
+            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr), gameinfo(nullptr), status(true) {
                 // Settings object for the parser
                 settings parser_settings {
                     false, // forward_dem        -> Unessecary because any content is internal
@@ -115,6 +116,11 @@ namespace dota {
                 return status;
             }
 
+            /** Returns pointer to the game information entity */
+            entity_game* getGameinfo() {
+                return gameinfo;
+            }
+
             /** Returns number of currently active players */
             uint32_t countPlayers() {
                 uint32_t c = 0;
@@ -133,6 +139,8 @@ namespace dota {
             parser* p;
             /** Keeps track of all the players */
             std::vector<entity_player*> players;
+            /** Pointer to gameinfo */
+            entity_game* gameinfo;
             /** Parsing status */
             bool status;
 
@@ -158,7 +166,10 @@ namespace dota {
 
             /** Handles the creation of the gamerules proxy object */
             void handleGame(handlerCbType(msgEntity) msg) {
-                // TODO: entity_game.hpp
+                gameinfo = new entity_game(msg->msg);
+
+                // TODO fix this working
+                // handlerRemoveCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTAGamerulesProxy"), alice_simple, handleGame);
             }
 
             /** Handles the player ressource object and creates new player entity representations */
