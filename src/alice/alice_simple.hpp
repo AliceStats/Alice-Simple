@@ -44,7 +44,7 @@ namespace dota {
             };
 
             /** Initializes the API by loading the given replay */
-            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr) {
+            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr), status(true) {
                 // Settings object for the parser
                 settings parser_settings {
                     false, // forward_dem        -> Unessecary because any content is internal
@@ -86,8 +86,11 @@ namespace dota {
                         break;
                 }
 
-                // Register to subscribe to further entities
+                // Ssubscribe to register events for specific entities
                 handlerRegisterCallback(p->getHandler(), msgStatus, REPLAY_FLATTABLES, alice_simple, handleReady)
+
+                // Subscribe to to stop parsing once we are done
+                handlerRegisterCallback(p->getHandler(), msgStatus, REPLAY_FINISH, alice_simple, handleFinish)
             }
 
             /** Releases all alocated ressources */
@@ -101,6 +104,16 @@ namespace dota {
 
             /** Prevent moving */
             alice_simple(alice_simple&&) = delete;
+
+            /** Parses the specified amount of messages, returns true if data is left to be parsed */
+            bool parse(uint32_t n = 1) {
+                while (status && (n > 0)) {
+                    p->read();
+                    --n;
+                }
+
+                return status;
+            }
 
             /** Returns number of currently active players */
             uint32_t countPlayers() {
@@ -120,6 +133,8 @@ namespace dota {
             parser* p;
             /** Keeps track of all the players */
             std::vector<entity_player*> players;
+            /** Parsing status */
+            bool status;
 
             /** This function is called when all flattables have been parsed */
             void handleReady(handlerCbType(msgStatus) msg) {
@@ -134,6 +149,11 @@ namespace dota {
                 for (auto &itemId : p->findEntityIdFor("CDOTA_Item_")) {
                     handlerRegisterCallback(p->getHandler(), msgEntity, itemId, alice_simple, handleItemsAddon);
                 }
+            }
+
+            /** Marks the replay as completed */
+            void handleFinish(handlerCbType(msgStatus) msg) {
+                status = false;
             }
 
             /** Handles the creation of the gamerules proxy object */
@@ -153,7 +173,7 @@ namespace dota {
                     if (ePlayerRessource->prop<uint32_t>(std::string(".m_iConnectionState.")+id) == 1)
                         continue;
 
-                    if (players[i] != nullptr)
+                    if (players[i] == nullptr)
                         players[i] = new entity_player(p, i);
                 }
 
