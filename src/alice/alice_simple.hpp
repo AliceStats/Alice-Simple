@@ -28,6 +28,8 @@
 #include <alice/config.hpp>
 #include <alice/parser.hpp>
 
+#include "entity_player.hpp"
+
 // Make sure we have all extra libraries available
 static_assert(DOTA_EXTRA, "Error: Addon libraries not available. Please compile Alice with BUILD_ADDONS=1.");
 
@@ -110,7 +112,7 @@ namespace dota {
             }
 
             /** Returns pointer to specified player */
-            uint32_t getPlayer(uint32_t id) {
+            entity_player* getPlayer(uint32_t id) {
                 return players[id];
             }
         private:
@@ -127,7 +129,7 @@ namespace dota {
                 // contains player ressources
                 handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_PlayerResource"), alice_simple, handlePlayers);
 
-                // items bough from players (base entities and specific entities with addon fields)
+                // items bough by players (base entities and specific entities with addon fields)
                 handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_Item"), alice_simple, handleItemsBase);
                 for (auto &itemId : p->findEntityIdFor("CDOTA_Item_")) {
                     handlerRegisterCallback(p->getHandler(), msgEntity, itemId, alice_simple, handleItemsAddon);

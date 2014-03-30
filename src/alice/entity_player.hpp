@@ -38,35 +38,31 @@ namespace dota {
     class entity_player {
         public:
             /** Constructor, creates a new player with given arguments */
-            entity_player(parser* p, uint32_t playerId) : p(p), ePlayer(nullptr), ePlayerRessource(nullptr), hero(nullptr) {
+            entity_player(parser* p, uint32_t playerId) : p(p), ePlayer(nullptr), ePlayerResource(nullptr), hero(nullptr), playerId(playerId) {
                 // Field id for player ressource
                 char id[5];
                 snprintf(id, 5, "%04d", playerId);
                 this->id = id;
 
                 // Find the player/-ressource entity
-                uint32_t prId = p.getEntityIdFor("CDOTA_PlayerResource");
-                uint32_t pId = p.getEntityIdFor("CDOTAPlayer");
+                const uint32_t prId = p->getEntityIdFor("CDOTA_PlayerResource");
+                const uint32_t pId = p->getEntityIdFor("CDOTAPlayer");
 
-                for (auto &e : p.getEntities()) {
+                for (auto &e : p->getEntities()) {
                     if (!e.isInitialized())
                         continue;
 
-                    switch (e.getClassId()) {
-                        case prId:
-                            // there is only one so we can simply assign it
-                            ePlayerResource = &e;
-                            break;
-                        case pId:
-                            // we need to find the correct player of this playerId
-                            if (e.prop<int32_t>(".m_iPlayerID") == playerId)
-                                ePlayer = &e;
-                            break;
+                    if (e.getClassId() == prId) {
+                        // there is only one so we can simply assign it
+                        ePlayerResource = &e;
+                    } else if (e.getClassId() == pId) {
+                        // we need to find the correct player of this playerId
+                        if (e.prop<int32_t>(".m_iPlayerID") == playerId) ePlayer = &e;
                     }
                 }
 
                 // Make sure we have the correct entities
-                if (ePlayer == nullptr || ePlayerRessource == nullptr) {
+                if (ePlayer == nullptr || ePlayerResource == nullptr) {
                     // Throw Exception: Unable to find correct player entities for playerId
                 }
             }
@@ -82,7 +78,7 @@ namespace dota {
 
             /** Returns the name of the player */
             std::string getName() {
-                return ePlayerRessource->prop<std::string>(".m_iszPlayerNames."+id);
+                return ePlayerResource->prop<std::string>(".m_iszPlayerNames."+id);
             }
 
             /** Whether the player is computer controlled or not */
@@ -237,10 +233,10 @@ namespace dota {
             entity_hero* getHero() {
                 if (hero == nullptr) {
                     uint32_t hId = ePlayer->prop<uint32_t>(".m_hAssignedHero.") & 0x7FF;
-                    entity eHero = p.getEntities()[hId]; // TODO validate hId
+                    entity eHero = p->getEntities()[hId]; // TODO validate hId
 
                     if (eHero.isInitialized()) {
-                        hero = new player_hero(&eHero);
+                        hero = new entity_hero(&eHero);
                     }
                 }
 
@@ -253,9 +249,11 @@ namespace dota {
             entity* ePlayer;
             /** Pointer to the CDOTAPlayerResource entity */
             entity* ePlayerResource;
+            /** Numeric ID of this player (0 - 31) */
+            uint32_t playerId;
 
             /** Hero this player is controlling */
-            player_hero* hero;
+            entity_hero* hero;
 
             /** Appended player index (e.g. 0001) */
             std::string id;
