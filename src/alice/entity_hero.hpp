@@ -102,7 +102,7 @@ namespace dota {
             }
 
             /** Returns maximum health */
-            uint32_t getHealtMax() {
+            uint32_t getHealthMax() {
                  return eHero->prop<uint32_t>(".m_iMaxHealth");
             }
 

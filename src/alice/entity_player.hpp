@@ -141,7 +141,7 @@ namespace dota {
                 if (playerId < 5) {
                     return ePlayerResource->prop<uint32_t>(".RadiantOnlyData.m_iReliableGoldRadiant."+id);
                 } else {
-                    return ePlayerResource->prop<uint32_t>(".DirOnlyData.m_iReliableGoldDire."+id);
+                    return ePlayerResource->prop<uint32_t>(".DireOnlyData.m_iReliableGoldDire."+id);
                 }
             }
 
@@ -150,7 +150,7 @@ namespace dota {
                 if (playerId < 5) {
                     return ePlayerResource->prop<uint32_t>(".RadiantOnlyData.m_iUnreliableGoldRadiant."+id);
                 } else {
-                    return ePlayerResource->prop<uint32_t>(".DirOnlyData.m_iUnreliableGoldDire."+id);
+                    return ePlayerResource->prop<uint32_t>(".DireOnlyData.m_iUnreliableGoldDire."+id);
                 }
             }
 
