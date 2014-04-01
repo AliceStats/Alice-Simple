@@ -142,8 +142,8 @@ namespace dota {
             }
 
             /** Current hero experience */
-            uint32_t getXP() {
-                 return eHero->prop<uint32_t>(".m_iCurrentXP");
+            int32_t getXP() {
+                 return eHero->prop<int32_t>(".m_iCurrentXP");
             }
 
             /** Minimum damage inflicted */
@@ -157,8 +157,8 @@ namespace dota {
             }
 
             /** Flat bonus damage from items */
-            uint32_t getDamageBonus() {
-                 return eHero->prop<uint32_t>(".m_iDamageBonus");
+            int32_t getDamageBonus() {
+                 return eHero->prop<int32_t>(".m_iDamageBonus");
             }
 
             /** Day time vision range */
@@ -172,8 +172,8 @@ namespace dota {
             }
 
             /** Damage inflicted in the last X seconds, TODO investigate */
-            uint32_t getRecentDamage() {
-                 return eHero->prop<uint32_t>(".m_iRecentDamage");
+            int32_t getRecentDamage() {
+                 return eHero->prop<int32_t>(".m_iRecentDamage");
             }
 
             /** Investigate which bits belong to which team */

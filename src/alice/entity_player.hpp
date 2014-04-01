@@ -231,9 +231,9 @@ namespace dota {
 
             /** Returns hero this player is controlling. May return 0 if no hero has been selected yet. */
             entity_hero* getHero() {
-                if (hero == nullptr) {
-                    uint32_t hId = ePlayer->prop<uint32_t>(".m_hAssignedHero.") & 0x7FF;
-                    entity eHero = p->getEntities()[hId]; // TODO validate hId
+                if (hero == nullptr && ePlayer->isInitialized()) {
+                    uint32_t hId = ePlayer->prop<uint32_t>(".m_hAssignedHero") & 0x7FF;
+                    entity &eHero = p->getEntities()[hId]; // TODO validate hId
 
                     if (eHero.isInitialized()) {
                         hero = new entity_hero(&eHero);
