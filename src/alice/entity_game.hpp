@@ -6,6 +6,8 @@
 
 #include <alice/entity.hpp>
 
+#include "entity_item.hpp"
+
 namespace dota {
     /** Contains method to access general game information */
     class entity_game {
@@ -165,8 +167,7 @@ namespace dota {
 
             /** The time the game loaded */
             float getTimeLoaded() {
-                return eGame->prop<float>(".dota_gamerules_data.m_fGameTime");
-                 // .dota_gamerules_data.m_flGameLoadTime
+                return eGame->prop<float>(".dota_gamerules_data.m_flGameLoadTime");
             }
 
             /** Get the time the pregame started */
@@ -224,15 +225,47 @@ namespace dota {
                 return eGame->prop<uint32_t>(".dota_gamerules_data.m_nGameWinner");
             }
 
-            // CDOTAGamerulesProxy
+             /** Returns items that have a maximum stock count and their corresponding stati. */
+            std::vector<item_stock> getItemStockRadiant() {
+                std::vector<item_stock> items;
 
-            // Bad / Good 0 - 8
-            // TODO:
-            // - .dota_gamerules_data.m_ItemStockInfoBad.0000.fStockDuration
-            // - .dota_gamerules_data.m_ItemStockInfoBad.0000.fStockTime
-            // - .dota_gamerules_data.m_ItemStockInfoBad.0000.iMaxCount
-            // - .dota_gamerules_data.m_ItemStockInfoBad.0000.iStockCount
-            // - .dota_gamerules_data.m_ItemStockInfoBad.0000.usItemIndex
+                // index to modify = 44
+                std::string strMutable = ".dota_gamerules_data.m_ItemStockInfoGood.0000";
+
+                for (uint32_t i = 0; i < 8; ++i) {
+                    strMutable[44] = (char)(((int)'0')+i);
+                    items.push_back({
+                        eGame->prop<uint32_t>(strMutable+".usItemIndex"),
+                        eGame->prop<float>(strMutable+".fStockDuration"),
+                        eGame->prop<float>(strMutable+".fStockTime"),
+                        eGame->prop<uint32_t>(strMutable+".iMaxCount"),
+                        eGame->prop<uint32_t>(strMutable+".iStockCount")
+                    });
+                }
+
+                return items;
+            }
+
+            /** Returns items that have a maximum stock count and their corresponding stati. */
+            std::vector<item_stock> getItemStockDire() {
+                std::vector<item_stock> items;
+
+                // index to modify = 43
+                std::string strMutable = ".dota_gamerules_data.m_ItemStockInfoBad.0000";
+
+                for (uint32_t i = 0; i < 8; ++i) {
+                    strMutable[43] = (char)(((int)'0')+i);
+                    items.push_back({
+                        eGame->prop<uint32_t>(strMutable+".usItemIndex"),
+                        eGame->prop<float>(strMutable+".fStockDuration"),
+                        eGame->prop<float>(strMutable+".fStockTime"),
+                        eGame->prop<uint32_t>(strMutable+".iMaxCount"),
+                        eGame->prop<uint32_t>(strMutable+".iStockCount")
+                    });
+                }
+
+                return items;
+            }
 
             // CDOTAGameManagerProxy
             // TODO:
