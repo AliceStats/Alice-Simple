@@ -35,13 +35,13 @@ namespace dota {
             }
 
             /** Returns the number of players that joined the lobby */
-            uint32_t getExpectedPlayers() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nExpectedPlayers");
+            int32_t getExpectedPlayers() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nExpectedPlayers");
             }
 
             /** Returns the number of players that correctly joined the game */
-            uint32_t getConnectedPlayers() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nLoadedPlayers");
+            int32_t getConnectedPlayers() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nLoadedPlayers");
             }
 
             /** Returns Dire wins if this game is in a series */
@@ -60,8 +60,8 @@ namespace dota {
             }
 
             /** Returns the game mode */
-            uint32_t getGameMode() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iGameMode");
+            int32_t getGameMode() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iGameMode");
             }
 
             /** Returns whether this game is running the stable mode */
@@ -70,28 +70,28 @@ namespace dota {
             }
 
             /** Returns the time at which the game has been started */
-            uint32_t getGameDate() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iNetTimeOfDay");
+            int32_t getGameDate() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iNetTimeOfDay");
             }
 
             /** Returns the current state of the game */
-            uint32_t getState() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nGameState");
+            int32_t getState() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nGameState");
             }
 
             /** Returns the current hero pick state based on the game mode */
-            uint32_t getPickState() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nHeroPickState");
+            int32_t getPickState() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nHeroPickState");
             }
 
             /** Returns the team that started picking */
-            uint32_t getPickTeamStart() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iStartingTeam");
+            int32_t getPickTeamStart() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iStartingTeam");
             }
 
             /** Returns the current team picking */
-            uint32_t getPickTeamActive() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iActiveTeam");
+            int32_t getPickTeamActive() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iActiveTeam");
             }
 
             /** Returns player numbers of captains */
@@ -105,8 +105,8 @@ namespace dota {
             }
 
             /** Returns the pick / ban order */
-            uint32_t getPickBanOrder() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iCMModePickBanOrder");
+            int32_t getPickBanOrder() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iCMModePickBanOrder");
             }
 
             /** Returns extra pick time remaining for the radiant */
@@ -191,8 +191,8 @@ namespace dota {
             }
 
             /** The team who paused the game */
-            uint32_t getPauseTeam() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_iPauseTeam");
+            int32_t getPauseTeam() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iPauseTeam");
             }
 
             /** Cooldown of radiant glyph if applicable */
@@ -206,8 +206,8 @@ namespace dota {
             }
 
             /** Returns the team that called GG */
-            uint32_t getGGTeam() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nGGTeam");
+            int32_t getGGTeam() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nGGTeam");
             }
 
             /** Time the game ends because one team called GG */
@@ -221,8 +221,8 @@ namespace dota {
             }
 
             /** Returns the winner of the game if applicable */
-            uint32_t getWinner() {
-                return eGame->prop<uint32_t>(".dota_gamerules_data.m_nGameWinner");
+            int32_t getWinner() {
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_nGameWinner");
             }
 
              /** Returns items that have a maximum stock count and their corresponding stati. */
