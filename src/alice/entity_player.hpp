@@ -236,7 +236,7 @@ namespace dota {
                     entity &eHero = p->getEntities()[hId]; // TODO validate hId
 
                     if (eHero.isInitialized()) {
-                        hero = new entity_hero(&eHero);
+                        hero = new entity_hero(&eHero, p);
                     }
                 }
 
