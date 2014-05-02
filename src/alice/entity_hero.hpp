@@ -28,6 +28,9 @@
 #include <alice/entity.hpp>
 #include <alice/parser.hpp>
 
+#include "entity_item.hpp"
+#include "entity_ability.hpp"
+
 namespace dota {
     /** Contains entity information about a hero */
     class entity_hero {
@@ -192,15 +195,31 @@ namespace dota {
             }
 
             /** Returns current hero items */
-            std::vector<item> getItems() {
-                std::vector<item> ret;
+            std::vector<entity_item> getItems() {
+                std::vector<entity_item> ret;
                 for (uint32_t i = 0; i < 14; ++i) {
                     char id[27];
                     snprintf(id, 27, ".m_Inventory.m_hItems.%04d", i);
 
                     uint32_t iId = eHero->prop<uint32_t>(id);
                     if (iId != 2097151) {
-                        ret.push_back(item(&p->getEntities()[iId & 0x7FF])); // TODO validate iId
+                        ret.push_back(entity_item(&p->getEntities()[iId & 0x7FF])); // TODO validate iId
+                    }
+                }
+
+                return ret;
+            }
+
+            /** Returns current hero abilities */
+            std::vector<entity_ability> getAbilities() {
+                std::vector<entity_ability> ret;
+                for (uint32_t i = 0; i < 16; ++i) {
+                    char id[19];
+                    snprintf(id, 19, ".m_hAbilities.%04d", i);
+
+                    uint32_t aId = eHero->prop<uint32_t>(id);
+                    if (aId != 2097151) {
+                        ret.push_back(entity_ability(&p->getEntities()[aId & 0x7FF])); // TODO validate aId
                     }
                 }
 
@@ -208,7 +227,6 @@ namespace dota {
             }
 
             // To Implement:
-            // .m_hAbilities.0000 - 15          - > entity_ability.hpp
             // .m_hMyWearables.0000 - 19        - > entity_wearable.hpp (Parse this using keyvalue and models?)
             // .m_Inventory.m_hInventoryParent  - > Check what this refers to
         private:

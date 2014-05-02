@@ -17,87 +17,135 @@ namespace dota {
     };
 
     /** A single item entity */
-    class item {
+    class entity_item {
         public:
             /** Creates an item from it's entity */
-            item(entity* item) : item(item) {
+            entity_item(entity* item) : eItem(item) {
 
             }
 
             /** Entity ID of the owner */
-            // .m_hOwnerEntity
+            uint32_t getOwner() {
+                return eItem->prop<uint32_t>(".m_hOwnerEntity");
+            }
 
             /** The owners team */
-            // .m_iTeamNum
+            int32_t getTeam() {
+                return eItem->prop<int32_t>(".m_iTeamNum");
+            }
 
             /** When this item was purchaes */
-            // .m_flPurchaseTime
+            float getPurchaseTime() {
+                return eItem->prop<float>(".m_flPurchaseTime");
+            }
 
             /** Who purchased this item */
-            // .m_hPurchaser
+            uint32_t getPurchaser() {
+                return eItem->prop<uint32_t>(".m_hPurchaser");
+            }
 
             /** Name of the item */
-            // .m_iName
+            std::string getName() {
+                return eItem->prop<std::string>(".m_iName");
+            }
 
             /** Whether this item can be activated */
-            // .m_bActivated
+            bool isActivated() {
+                return eItem->prop<uint32_t>(".m_bActivated") == 1;
+            }
 
             /** Level of the item (e.g. 1-3 for necronomicon) */
-            // .m_iLevel
+            uint32_t getLevel() {
+                return eItem->prop<uint32_t>(".m_iLevel");
+            }
 
             /** Current toggle state */
-            // .m_bToggleState
+            bool getToggleState() {
+                return eItem->prop<uint32_t>(".m_bToggleState") == 1;
+            }
 
             /** Time the item comes off cooldown */
-            // .m_fCooldown
+            float getCooldown() {
+                return eItem->prop<float>(".m_fCooldown");
+            }
 
             /** If the item has a cooldown, how long is it */
-            // .m_flCooldownLength
+            float getCooldownLength() {
+                return eItem->prop<float>(".m_flCooldownLength");
+            }
 
             /** Cast range */
-            // .m_iCastRange
+            uint32_t getCastRange() {
+                return eItem->prop<uint32_t>(".m_iCastRange");
+            }
 
             /** Mana Cost */
-            // .m_iManaCost
+            uint32_t getManaCost() {
+                return eItem->prop<uint32_t>(".m_iManaCost");
+            }
 
             /** Initial number of charges */
-            // .m_iInitialCharges
+            uint32_t getInitialCharges() {
+                return eItem->prop<uint32_t>(".m_iInitialCharges");
+            }
 
             /** Current charges */
-            // .m_iCurrentCharges
+            uint32_t getCurrentCharges() {
+                return eItem->prop<uint32_t>(".m_iCurrentCharges");
+            }
 
             /** If this items requires charges to be cast */
-            // .m_bRequiresCharges
+            bool requiresCharges() {
+                return eItem->prop<uint32_t>(".m_bRequiresCharges") == 1;
+            }
 
             /** Combinable with other items? */
-            // .m_bCombinable
+            bool isCombinable() {
+                return eItem->prop<uint32_t>(".m_bCombinable") == 1;
+            }
 
             /** Is this item stackable? */
-            // .m_bStackable
+            bool isStackable() {
+                return eItem->prop<uint32_t>(".m_bStackable") == 1;
+            }
 
             /** Is this a recipe? */
-            // .m_bRecipe
+            bool isRecipe() {
+                return eItem->prop<uint32_t>(".m_bRecipe") == 1;
+            }
 
-            /** Can this item be shared? */
-            // .m_iSharability
+            /** Teams this item can be shared with. */
+            int32_t getSharability() {
+                return eItem->prop<int32_t>(".m_iSharability");
+            }
 
             /** Droppable (e.g. Aegis) ? */
-            // .m_bDroppable
+            bool isDroppable() {
+                return eItem->prop<uint32_t>(".m_bDroppable") == 1;
+            }
 
             /** Puchasable (e.g. Aegis) ? */
-            // .m_bPurchasable
+            bool isPurchasable() {
+                return eItem->prop<uint32_t>(".m_bPurchasable") == 1;
+            }
 
             /** Sellable */
-            // .m_bSellable
+            bool isSellable() {
+                return eItem->prop<uint32_t>(".m_bSellable") == 1;
+            }
 
             /** If this item is dissasemblable */
-            // .m_bDisassemblable
+            bool isDissasemblable() {
+                return eItem->prop<uint32_t>(".m_bDisassemblable") == 1;
+            }
 
             /** If you can alert your teammates about this ite, */
-            // .m_bAlertable
+            bool isAlertable() {
+                return eItem->prop<uint32_t>(".m_bAlertable") == 1;
+            }
         private:
             /** Points at the entity containing the item */
-            entity* item;
+            entity* eItem;
     };
 }
 
