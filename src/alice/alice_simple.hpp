@@ -43,9 +43,18 @@ namespace dota {
                 USE_FILE = 0,
                 USE_MEMORY
             };
+            
+            /** Initialize the API by providing a pointer to a new(!) parser object, does not free the parser after it's finished */
+            alice_simple(parser* p) : p(p), players(32, nullptr), gameinfo(nullptr), status(true), freeP(false) {
+                // Ssubscribe to register events for specific entities
+                handlerRegisterCallback(p->getHandler(), msgStatus, REPLAY_FLATTABLES, alice_simple, handleReady)
+
+                // Subscribe to to stop parsing once we are done
+                handlerRegisterCallback(p->getHandler(), msgStatus, REPLAY_FINISH, alice_simple, handleFinish)
+            }
 
             /** Initializes the API by loading the given replay */
-            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr), gameinfo(nullptr), status(true) {
+            alice_simple(std::string replay, stream_type s = USE_FILE) : p(nullptr), players(32, nullptr), gameinfo(nullptr), status(true), freeP(true) {
                 // Settings object for the parser
                 settings parser_settings {
                     false, // forward_dem        -> Unessecary because any content is internal
@@ -69,7 +78,8 @@ namespace dota {
                         // CBaseAnimating
                         // CDOTAWearableItem
 
-                    }
+                    },
+                    false
                 };
 
                 // Initialize the parser with the given arguments
@@ -96,7 +106,7 @@ namespace dota {
 
             /** Releases all alocated ressources */
             ~alice_simple() {
-                if (p != nullptr)
+                if (p != nullptr && freeP)
                     delete p;
             }
 
@@ -143,6 +153,8 @@ namespace dota {
             entity_game* gameinfo;
             /** Parsing status */
             bool status;
+            /** Whether the parser is managed by us or not */
+            bool freeP;
 
             /** This function is called when all flattables have been parsed */
             void handleReady(handlerCbType(msgStatus) msg) {
