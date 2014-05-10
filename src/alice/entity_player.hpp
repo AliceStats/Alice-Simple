@@ -62,9 +62,8 @@ namespace dota {
                 }
 
                 // Make sure we have the correct entities
-                if (ePlayer == nullptr || ePlayerResource == nullptr) {
-                    // Throw Exception: Unable to find correct player entities for playerId
-                }
+                assert(ePlayer != nullptr);
+                assert(ePlayerRessource != nullptr);
             }
 
             /** Default copy constructor */
@@ -231,8 +230,8 @@ namespace dota {
 
             /** Returns hero this player is controlling. May return 0 if no hero has been selected yet. */
             entity_hero* getHero() {
-                if (hero == nullptr && ePlayer->isInitialized()) {
-                    uint32_t hId = ePlayer->prop<uint32_t>(".m_hAssignedHero") & 0x7FF;
+                if (hero == nullptr && ePlayerResource->isInitialized()) {
+                    uint32_t hId = ePlayerResource->prop<uint32_t>(".m_hSelectedHero."+id) & 0x7FF;
                     entity &eHero = p->getEntities()[hId]; // TODO validate hId
 
                     if (eHero.isInitialized()) {
