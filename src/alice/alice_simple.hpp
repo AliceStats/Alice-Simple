@@ -193,7 +193,7 @@ namespace dota {
                 for (int i = 0; i < 32; ++i) {
                     snprintf(id, 5, "%04d", i);
 
-                    if (ePlayerRessource->prop<uint32_t>(std::string(".m_iConnectionState.")+id) == 1)
+                    if (ePlayerRessource->prop<uint32_t>(std::string(".m_iConnectionState.")+id, 0) == 1)
                         continue;
 
                     if (players[i] == nullptr)
