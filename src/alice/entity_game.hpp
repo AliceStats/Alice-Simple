@@ -106,7 +106,7 @@ namespace dota {
 
             /** Returns the pick / ban order */
             int32_t getPickBanOrder() {
-                return eGame->prop<int32_t>(".dota_gamerules_data.m_iCMModePickBanOrder");
+                return eGame->prop<int32_t>(".dota_gamerules_data.m_iCMModePickBanOrder", 0);
             }
 
             /** Returns extra pick time remaining for the radiant */
