@@ -163,12 +163,26 @@ namespace dota {
 
                 // contains player ressources
                 handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_PlayerResource"), alice_simple, handlePlayers);
-
-                // items bough by players (base entities and specific entities with addon fields)
-                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_Item"), alice_simple, handleItemsBase);
-                for (auto &itemId : p->findEntityIdFor("CDOTA_Item_")) {
-                    handlerRegisterCallback(p->getHandler(), msgEntity, itemId, alice_simple, handleItemsAddon);
+                
+                // stubs for important but not directly requested entities, required when we skip unsubscribed entities
+                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTAPlayer"), alice_simple, handleStub);
+                handlerRegisterCallback(p->getHandler(), msgEntity, p->getEntityIdFor("CDOTA_Item"), alice_simple, handleStub);
+                
+                for (auto &Id : p->findEntityIdFor("CDOTA_Unit_Hero_")) {
+                    handlerRegisterCallback(p->getHandler(), msgEntity, Id, alice_simple, handleStub);
                 }
+                
+                for (auto &Id : p->findEntityIdFor("CDOTA_Ability_")) {
+                    handlerRegisterCallback(p->getHandler(), msgEntity, Id, alice_simple, handleStub);
+                }      
+                
+                for (auto &itemId : p->findEntityIdFor("CDOTA_Item_")) {
+                    handlerRegisterCallback(p->getHandler(), msgEntity, itemId, alice_simple, handleStub);
+                }
+            }
+            
+            void handleStub(handlerCbType(msgEntity) msg) {
+                // ignore 
             }
 
             /** Marks the replay as completed */
@@ -201,16 +215,6 @@ namespace dota {
                 }
 
                 // TODO: check gametime from handle game
-            }
-
-            /** Handle all basic items that don't have special properties */
-            void handleItemsBase(handlerCbType(msgEntity) msg) {
-                // TODO: entity_item.hpp
-            }
-
-            /** handle all special items that have additional / unique properties */
-            void handleItemsAddon(handlerCbType(msgEntity) msg) {
-                // TODO: entity_item.hpp
             }
     };
 }
