@@ -63,7 +63,7 @@ namespace dota {
 
                 // Make sure we have the correct entities
                 assert(ePlayer != nullptr);
-                assert(ePlayerRessource != nullptr);
+                assert(ePlayerResource != nullptr);
             }
 
             /** Default copy constructor */
